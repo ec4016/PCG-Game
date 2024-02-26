@@ -15,7 +15,7 @@ collisionTileIndex = 16;
 var nextX = x + vx;
 var nextY = y + vy;
 
-if (place_meeting(nextX, nextY, WallTile)) {
+if (place_meeting(nextX, nextY, obj_wall)) {
     vx = 0;
     vy = 0;
 }
