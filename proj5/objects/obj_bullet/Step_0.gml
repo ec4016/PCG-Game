@@ -1,8 +1,7 @@
-/// @description Insert description here
-// You can write your code in this editor
+//move_bounce_solid(0);
 
-if (x > room_width) {
-    instance_destroy();
-}
+//if (x > room_width) {
+//    instance_destroy();
+//}
 
 
