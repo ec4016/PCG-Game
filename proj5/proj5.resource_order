@@ -15,10 +15,12 @@
     {"name":"Timelines","order":7,"path":"folders/Timelines.yy",},
   ],
   "ResourceOrderSettings": [
+    {"name":"obj_player","order":2,"path":"objects/obj_player/obj_player.yy",},
     {"name":"spr_player","order":1,"path":"sprites/spr_player/spr_player.yy",},
     {"name":"spr_rock_big","order":2,"path":"sprites/spr_rock_big/spr_rock_big.yy",},
     {"name":"sTile","order":4,"path":"sprites/sTile/sTile.yy",},
     {"name":"spr_rock_small","order":3,"path":"sprites/spr_rock_small/spr_rock_small.yy",},
+    {"name":"obj_bullet","order":1,"path":"objects/obj_bullet/obj_bullet.yy",},
     {"name":"rmDungeon","order":1,"path":"rooms/rmDungeon/rmDungeon.yy",},
     {"name":"DungeonRoom","order":1,"path":"scripts/DungeonRoom/DungeonRoom.yy",},
   ],
