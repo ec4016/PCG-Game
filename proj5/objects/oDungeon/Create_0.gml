@@ -6,16 +6,16 @@ dungeon = ds_grid_create(_dungeonWidth, _dungeonHeight);
 roomList = ds_list_create();
 
 // Room size ranges
-roomWidthMin = 10;
-roomWidthMax = 12;
-roomHeightMin = 10;
-roomHeightMax = 12;
+roomWidthMin = 20;
+roomWidthMax = 24;
+roomHeightMin = 20;
+roomHeightMax = 24;
 
 // Hallway size ranges
-hallwayLengthMin = 3;
-hallwayLengthMax = 8;
-hallwayWidthMin = 2;
-hallwayWidthMax = 3;
+hallwayLengthMin = 6;
+hallwayLengthMax = 16;
+hallwayWidthMin = 4;
+hallwayWidthMax = 6;
 
 // Room to create a new room from
 currentRoom = noone;
@@ -28,6 +28,8 @@ iterations = 0;
 
 // The maximum number of failed iterations before quitting generation
 iterationMax = 50;
+
+wallTileIndex = 16;
 
 GenerateNewDungeon = function() {
 	
@@ -276,6 +278,9 @@ GenerateNewDungeon = function() {
 			tilemap_set(layer_tilemap_get_id(layer_get_id("Tiles")), _tileInd, xx, yy);
 		}
 	}
+
+
+	
 }
 
 CreateRoom = function(_x1, _y1, _x2, _y2) {
@@ -285,6 +290,15 @@ CreateRoom = function(_x1, _y1, _x2, _y2) {
 	
 	// Fill the dungeon with a room
 	ds_grid_set_region(dungeon, _x1, _y1, _x2, _y2, CELL_TYPES.ROOM);
+	
+	for (var xx = _x1 - 1; xx <= _x2 + 1; xx++) {
+        tilemap_set(layer_tilemap_get_id(layer_get_id("WallTile")), wallTileIndex, xx, _y1 - 1);
+        tilemap_set(layer_tilemap_get_id(layer_get_id("WallTile")), wallTileIndex, xx, _y2 + 1);
+    }
+    for (var yy = _y1 - 1; yy <= _y2 + 1; yy++) {
+        tilemap_set(layer_tilemap_get_id(layer_get_id("WallTile")), wallTileIndex, _x1 - 1, yy);
+        tilemap_set(layer_tilemap_get_id(layer_get_id("WallTile")), wallTileIndex, _x2 + 1, yy);
+    }
 }
 
 CreateHallway = function(_x1, _y1, _x2, _y2) {
@@ -293,3 +307,10 @@ CreateHallway = function(_x1, _y1, _x2, _y2) {
 }
 
 GenerateNewDungeon();
+
+var firstRoom = ds_list_find_value(roomList, 0);
+
+var centerX = (firstRoom.x1 + firstRoom.x2) / 2;
+var centerY = (firstRoom.y1 + firstRoom.y2) / 2;
+
+var playerInstance = instance_create_layer(centerX * CELL_SIZE + (CELL_SIZE / 2), centerY * CELL_SIZE + (CELL_SIZE / 2), "Dungeon", obj_player);
