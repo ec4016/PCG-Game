@@ -1,7 +1,7 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "create_macros",
+  "name": "DungeonRoom",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
