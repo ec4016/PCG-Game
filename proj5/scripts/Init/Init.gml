@@ -1,4 +1,4 @@
-#macro CELL_SIZE 64
+#macro CELL_SIZE 16
 
 enum CELL_TYPES {
 	WALL,
