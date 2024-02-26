@@ -15,7 +15,7 @@ collisionTileIndex = 16;
 var nextX = x + vx;
 var nextY = y + vy;
 
-if (tilemap_get_at_pixel(WallTile, nextX, nextY) == collisionTileIndex) {
+if (place_meeting(nextX, nextY, WallTile)) {
     vx = 0;
     vy = 0;
 }
