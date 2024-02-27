@@ -25,6 +25,7 @@
     {"name":"TileSet2","order":1,"path":"tilesets/TileSet2/TileSet2.yy",},
     {"name":"spr_heartboost","order":10,"path":"sprites/spr_heartboost/spr_heartboost.yy",},
     {"name":"oRichochet","order":12,"path":"objects/oRichochet/oRichochet.yy",},
+    {"name":"spr_turret","order":11,"path":"sprites/spr_turret/spr_turret.yy",},
     {"name":"sTile","order":4,"path":"sprites/sTile/sTile.yy",},
     {"name":"obj_hazard","order":9,"path":"objects/obj_hazard/obj_hazard.yy",},
     {"name":"heart","order":7,"path":"sprites/heart/heart.yy",},

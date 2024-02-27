@@ -30,8 +30,8 @@
   "properties": [],
   "solid": false,
   "spriteId": {
-    "name": "spr_rock_small",
-    "path": "sprites/spr_rock_small/spr_rock_small.yy",
+    "name": "spr_turret",
+    "path": "sprites/spr_turret/spr_turret.yy",
   },
   "spriteMaskId": null,
   "visible": true,

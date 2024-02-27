@@ -46,6 +46,7 @@
     {"id":{"name":"spr_heartboost","path":"sprites/spr_heartboost/spr_heartboost.yy",},},
     {"id":{"name":"oRichochet","path":"objects/oRichochet/oRichochet.yy",},},
     {"id":{"name":"spr_bullet","path":"sprites/spr_bullet/spr_bullet.yy",},},
+    {"id":{"name":"spr_turret","path":"sprites/spr_turret/spr_turret.yy",},},
     {"id":{"name":"sTile","path":"sprites/sTile/sTile.yy",},},
     {"id":{"name":"obj_hazard","path":"objects/obj_hazard/obj_hazard.yy",},},
     {"id":{"name":"Init","path":"scripts/Init/Init.yy",},},
