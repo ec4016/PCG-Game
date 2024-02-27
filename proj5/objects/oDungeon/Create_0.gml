@@ -37,7 +37,15 @@ GenerateNewDungeon = function() {
 	iterations = 0;
 	ds_list_clear(roomList);
 	tilemap_clear(layer_tilemap_get_id(layer_get_id("Tiles")), 0);
-	
+	with(obj_wall){
+		instance_destroy();
+	}
+	with(oTracker){
+		instance_destroy();
+	}
+	with(oTurret){
+		instance_destroy();
+	}
 	var _dungeonWidth = ds_grid_width(dungeon);
 	var _dungeonHeight = ds_grid_height(dungeon);
 	
@@ -235,11 +243,16 @@ GenerateNewDungeon = function() {
 					}
 					
 					if (!_isTouching) {
-						CreateRoom(_roomX1, _roomY1, _roomX2, _roomY2);
-						CreateHallway(_hallwayX1, _hallwayY1, _hallwayX2, _hallwayY2, isNorthSouth);
+						//create hallway object first
 						var hallway = new DungeonHallway(_hallwayX1, _hallwayY1, _hallwayX2, _hallwayY2, isNorthSouth);
+						//add hallway to previous room
 						ds_list_add(currentRoom.hallways, hallway);
-						ds_list_add(ds_list_find_value(roomList,ds_list_size(roomList)-1).hallways, hallway);
+						//create and paint new room
+						var newRoom = CreateRoom(_roomX1, _roomY1, _roomX2, _roomY2);
+						//paint hallways
+						CreateHallway(_hallwayX1, _hallwayY1, _hallwayX2, _hallwayY2, isNorthSouth);
+						//add hallway to new room
+						ds_list_add(newRoom.hallways, hallway);
 						_createdHallway = true;
 						iterations = -1;
 						break;
@@ -294,8 +307,33 @@ GenerateNewDungeon = function() {
 		show_debug_message(string(testRoom.x1) + ", " + string(testRoom.y1) + " to " + string(testRoom.x2) + ", " + string(testRoom.y2));
 		var hallwayCount = ds_list_size(testRoom.hallways);
 		show_debug_message(string(hallwayCount));
-	}	
+	}
+	
+	
+	var firstRoom = ds_list_find_value(roomList, 0);
 
+	var centerX = (firstRoom.x1 + firstRoom.x2) / 2;
+	var centerY = (firstRoom.y1 + firstRoom.y2) / 2;
+
+	var playerInstance = instance_create_layer(centerX * CELL_SIZE + (CELL_SIZE / 2), centerY * CELL_SIZE + (CELL_SIZE / 2), "Dungeon", obj_player);
+	
+	var deadEnd = ds_list_create();
+	
+	for(var i = 0; i < ds_list_size(roomList);i++){
+		var rm = ds_list_find_value(roomList,i);
+		var enemy = [];
+		if(i!=0){
+			enemy = CreateEnemies(rm.x1,rm.y1,rm.x2,rm.y2);
+		}
+		//createHazards(rm.x1,rm.y1,rm.x2,rm.y2);
+		if(ds_list_size(rm.hallways)<=1){
+			ds_list_add(deadEnd, rm);
+		}
+	}
+	
+	var reloadRand = irandom(ds_list_size(deadEnd) - 1);
+	var reloadRoom = ds_list_find_value(deadEnd, reloadRand);
+	//Generate dungeon reload instance in this room;
 
 
 	
@@ -327,8 +365,7 @@ CreateRoom = function(_x1, _y1, _x2, _y2) {
         instance_create_layer((_x2 + 1) * cellSize, yy * cellSize, "WallTile", obj_wall);
     }
 	
-	CreateEnemies(_x1,_y1,_x2,_y2);
-	
+	return currentRoom;
 	//CreateHazards(_x1,_y1,_x2,_y2);
 }
 
@@ -448,13 +485,8 @@ CreateEnemies = function(_x1,_y1,_x2,_y2){
 		enemy.y = posY;
 		placedEnemies[array_length(placedEnemies)] = {x: posX, y: posY};
 	}
+	return placedEnemies;
 }
 
 GenerateNewDungeon();
 
-var firstRoom = ds_list_find_value(roomList, 0);
-
-var centerX = (firstRoom.x1 + firstRoom.x2) / 2;
-var centerY = (firstRoom.y1 + firstRoom.y2) / 2;
-
-var playerInstance = instance_create_layer(centerX * CELL_SIZE + (CELL_SIZE / 2), centerY * CELL_SIZE + (CELL_SIZE / 2), "Dungeon", obj_player);
