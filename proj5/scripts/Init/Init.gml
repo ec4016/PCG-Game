@@ -1,4 +1,6 @@
 #macro CELL_SIZE 16
+#macro ENEM_DISTANCE 10
+#macro ENEM_HEALTH 2
 
 enum CELL_TYPES {
 	WALL,
