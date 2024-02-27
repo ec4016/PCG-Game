@@ -6,16 +6,16 @@ dungeon = ds_grid_create(_dungeonWidth, _dungeonHeight);
 roomList = ds_list_create();
 
 // Room size ranges
-roomWidthMin = 10;
-roomWidthMax = 12;
-roomHeightMin = 10;
-roomHeightMax = 12;
+roomWidthMin = 20;
+roomWidthMax = 24;
+roomHeightMin = 20;
+roomHeightMax = 24;
 
 // Hallway size ranges
-hallwayLengthMin = 3;
-hallwayLengthMax = 8;
-hallwayWidthMin = 2;
-hallwayWidthMax = 3;
+hallwayLengthMin = 6;
+hallwayLengthMax = 16;
+hallwayWidthMin = 4;
+hallwayWidthMax = 6;
 
 // Room to create a new room from
 currentRoom = noone;
@@ -28,6 +28,8 @@ iterations = 0;
 
 // The maximum number of failed iterations before quitting generation
 iterationMax = 50;
+
+wallTileIndex = 16;
 
 GenerateNewDungeon = function() {
 	
@@ -102,10 +104,11 @@ GenerateNewDungeon = function() {
 			
 				var _hallwayX1, _hallwayX2, _hallwayY1, _hallwayY2;
 				var _minRange, _maxRange;
-			
+				var isNorthSouth;
 				//Connect the new room and previous room with a hallway, and calculate the hallway's four corners
 				switch (_dir) {
 					case DIRECTIONS.WEST:
+						isNorthSouth = false;
 						_hallwayX1 = _roomX2 + 1;
 						_hallwayX2 = _hallwayX1 + _hallwayLength - 1;
                  
@@ -127,6 +130,7 @@ GenerateNewDungeon = function() {
 						_hallwayY2 = _hallwayY1 + (_hallwayWidth - 1);
 						break;
 					case DIRECTIONS.EAST:
+						isNorthSouth = false;
 						_hallwayX1 = _roomX1 - _hallwayLength;
 						_hallwayX2 = _hallwayX1 + _hallwayLength - 1;
                  
@@ -148,6 +152,8 @@ GenerateNewDungeon = function() {
 						_hallwayY2 = _hallwayY1 + (_hallwayWidth - 1);
 						break;
 					case DIRECTIONS.NORTH:
+						isNorthSouth = true;
+
 						if (_roomX1 < currentRoom.x1) {
 							_minRange = currentRoom.x1;
 						}
@@ -168,6 +174,7 @@ GenerateNewDungeon = function() {
 						_hallwayY2 = _hallwayY1 + _hallwayLength - 1;
 						break;
 					case DIRECTIONS.SOUTH:
+						isNorthSouth = true;
 						if (_roomX1 < currentRoom.x1) {
 							_minRange = currentRoom.x1;
 						}
@@ -228,9 +235,8 @@ GenerateNewDungeon = function() {
 					}
 					
 					if (!_isTouching) {
-					
-						CreateHallway(_hallwayX1, _hallwayY1, _hallwayX2, _hallwayY2);
 						CreateRoom(_roomX1, _roomY1, _roomX2, _roomY2);
+						CreateHallway(_hallwayX1, _hallwayY1, _hallwayX2, _hallwayY2, isNorthSouth);
 						
 						_createdHallway = true;
 						iterations = -1;
@@ -276,6 +282,9 @@ GenerateNewDungeon = function() {
 			tilemap_set(layer_tilemap_get_id(layer_get_id("Tiles")), _tileInd, xx, yy);
 		}
 	}
+
+
+	
 }
 
 CreateRoom = function(_x1, _y1, _x2, _y2) {
@@ -285,11 +294,88 @@ CreateRoom = function(_x1, _y1, _x2, _y2) {
 	
 	// Fill the dungeon with a room
 	ds_grid_set_region(dungeon, _x1, _y1, _x2, _y2, CELL_TYPES.ROOM);
+	
+	/*for (var xx = _x1 - 1; xx <= _x2 + 1; xx++) {
+        tilemap_set(layer_tilemap_get_id(layer_get_id("WallTile")), wallTileIndex, xx, _y1 - 1);
+        tilemap_set(layer_tilemap_get_id(layer_get_id("WallTile")), wallTileIndex, xx, _y2 + 1);
+    }
+    for (var yy = _y1 - 1; yy <= _y2 + 1; yy++) {
+        tilemap_set(layer_tilemap_get_id(layer_get_id("WallTile")), wallTileIndex, _x1 - 1, yy);
+        tilemap_set(layer_tilemap_get_id(layer_get_id("WallTile")), wallTileIndex, _x2 + 1, yy);
+    }*/
+	var cellSize = 16; // 假设每个tile的大小为32x32像素
+    for (var xx = _x1 - 1; xx <= _x2 + 1; xx++) {
+        instance_create_layer(xx * cellSize, (_y1 - 1) * cellSize, "WallTile", obj_wall);
+        instance_create_layer(xx * cellSize, (_y2 + 1) * cellSize, "WallTile", obj_wall);
+    }
+    for (var yy = _y1 - 1; yy <= _y2 + 1; yy++) {
+        instance_create_layer((_x1 - 1) * cellSize, yy * cellSize, "WallTile", obj_wall);
+        instance_create_layer((_x2 + 1) * cellSize, yy * cellSize, "WallTile", obj_wall);
+    }
 }
 
-CreateHallway = function(_x1, _y1, _x2, _y2) {
+CreateHallway = function(_x1, _y1, _x2, _y2, isNorthSouth) {
 	// Fill the dungeon with a hallway
 	ds_grid_set_region(dungeon, _x1, _y1, _x2, _y2, CELL_TYPES.HALLWAY);
+	/*
+	var wallLayer = layer_tilemap_get_id(layer_get_id("WallTile"));
+    
+    if (isNorthSouth) {
+        for (var temp_y = _y1; temp_y <= _y2; temp_y++) {
+            tilemap_set(wallLayer, wallTileIndex, _x1 - 1, temp_y);
+            tilemap_set(wallLayer, wallTileIndex, _x2 + 1, temp_y);
+        }
+		for (var temp_x = _x1; temp_x <= _x2; temp_x++) {
+            tilemap_set(wallLayer, 0, temp_x, _y1);
+            tilemap_set(wallLayer, 0, temp_x, _y2);
+        }
+    } else {
+        for (var temp_x = _x1; temp_x <= _x2; temp_x++) {
+            tilemap_set(wallLayer, wallTileIndex, temp_x, _y1 - 1);
+            tilemap_set(wallLayer, wallTileIndex, temp_x, _y2 + 1);
+        }
+		for (var temp_y = _y1; temp_y <= _y2; temp_y++) {
+            tilemap_set(wallLayer, 0, _x1 , temp_y);
+            tilemap_set(wallLayer, 0, _x2, temp_y);
+        }
+    }*/
+	
+	var cellSize = 16; // 假设每个tile的大小为32x32像素
+    
+    if (isNorthSouth) {
+        for (var temp_y = _y1; temp_y <= _y2; temp_y++) {
+            instance_create_layer((_x1 - 1) * cellSize, temp_y * cellSize, "Dungeon", obj_wall);
+            instance_create_layer((_x2 + 1) * cellSize, temp_y * cellSize, "Dungeon", obj_wall);
+        }
+		for (var temp_x = _x1; temp_x <= _x2; temp_x++) {
+            var instanceLeft = instance_position((temp_x) * cellSize, _y1 * cellSize, obj_wall);
+	        if (instanceLeft != noone) instance_destroy(instanceLeft);
+
+	        var instanceRight = instance_position((temp_x) * cellSize, _y2 * cellSize, obj_wall);
+	        if (instanceRight != noone) instance_destroy(instanceRight);
+	        }
+    } else {
+        for (var temp_x = _x1; temp_x <= _x2; temp_x++) {
+            instance_create_layer(temp_x * cellSize, (_y1 - 1) * cellSize, "Dungeon", obj_wall);
+            instance_create_layer(temp_x * cellSize, (_y2 + 1) * cellSize, "Dungeon", obj_wall);
+        }
+		for (var temp_y = _y1; temp_y <= _y2; temp_y++) {
+	        var instanceLeft = instance_position((_x1) * cellSize, temp_y * cellSize, obj_wall);
+	        if (instanceLeft != noone) instance_destroy(instanceLeft);
+
+	        var instanceRight = instance_position((_x2) * cellSize, temp_y * cellSize, obj_wall);
+	        if (instanceRight != noone) instance_destroy(instanceRight);
+	    }
+    }
+	
+
 }
 
 GenerateNewDungeon();
+
+var firstRoom = ds_list_find_value(roomList, 0);
+
+var centerX = (firstRoom.x1 + firstRoom.x2) / 2;
+var centerY = (firstRoom.y1 + firstRoom.y2) / 2;
+
+var playerInstance = instance_create_layer(centerX * CELL_SIZE + (CELL_SIZE / 2), centerY * CELL_SIZE + (CELL_SIZE / 2), "Dungeon", obj_player);

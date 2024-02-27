@@ -13,6 +13,16 @@ if (keyboard_check(ord("A"))) vx -= moveSpeed;
 if (keyboard_check(ord("D"))) vx += moveSpeed;
 shoot = mouse_check_button(mb_left);
 
+collisionTileIndex = 16;
+
+var nextX = x + vx;
+var nextY = y + vy;
+
+if (place_meeting(nextX, nextY, obj_wall)) {
+    vx = 0;
+    vy = 0;
+}
+
 x += vx;
 y += vy;
 
