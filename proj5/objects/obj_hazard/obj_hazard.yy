@@ -1,10 +1,8 @@
 {
   "resourceType": "GMObject",
   "resourceVersion": "1.0",
-  "name": "oTracker",
-  "eventList": [
-    {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,},
-  ],
+  "name": "obj_hazard",
+  "eventList": [],
   "managed": true,
   "overriddenProperties": [],
   "parent": {
@@ -28,8 +26,8 @@
   "properties": [],
   "solid": false,
   "spriteId": {
-    "name": "spr_rock_big",
-    "path": "sprites/spr_rock_big/spr_rock_big.yy",
+    "name": "spr_hazard",
+    "path": "sprites/spr_hazard/spr_hazard.yy",
   },
   "spriteMaskId": null,
   "visible": true,

@@ -6,10 +6,10 @@ dungeon = ds_grid_create(_dungeonWidth, _dungeonHeight);
 roomList = ds_list_create();
 
 // Room size ranges
-roomWidthMin = 20;
-roomWidthMax = 24;
-roomHeightMin = 20;
-roomHeightMax = 24;
+roomWidthMin = 22;
+roomWidthMax = 26;
+roomHeightMin = 22;
+roomHeightMax = 26;
 
 // Hallway size ranges
 hallwayLengthMin = 6;
@@ -37,7 +37,15 @@ GenerateNewDungeon = function() {
 	iterations = 0;
 	ds_list_clear(roomList);
 	tilemap_clear(layer_tilemap_get_id(layer_get_id("Tiles")), 0);
-	
+	with(obj_wall){
+		instance_destroy();
+	}
+	with(oTracker){
+		instance_destroy();
+	}
+	with(oTurret){
+		instance_destroy();
+	}
 	var _dungeonWidth = ds_grid_width(dungeon);
 	var _dungeonHeight = ds_grid_height(dungeon);
 	
@@ -235,9 +243,16 @@ GenerateNewDungeon = function() {
 					}
 					
 					if (!_isTouching) {
-						CreateRoom(_roomX1, _roomY1, _roomX2, _roomY2);
+						//create hallway object first
+						var hallway = new DungeonHallway(_hallwayX1, _hallwayY1, _hallwayX2, _hallwayY2, isNorthSouth);
+						//add hallway to previous room
+						ds_list_add(currentRoom.hallways, hallway);
+						//create and paint new room
+						var newRoom = CreateRoom(_roomX1, _roomY1, _roomX2, _roomY2);
+						//paint hallways
 						CreateHallway(_hallwayX1, _hallwayY1, _hallwayX2, _hallwayY2, isNorthSouth);
-						
+						//add hallway to new room
+						ds_list_add(newRoom.hallways, hallway);
 						_createdHallway = true;
 						iterations = -1;
 						break;
@@ -282,6 +297,43 @@ GenerateNewDungeon = function() {
 			tilemap_set(layer_tilemap_get_id(layer_get_id("Tiles")), _tileInd, xx, yy);
 		}
 	}
+	
+	//test for new dungeonRoom structure
+	/*var roomCount = ds_list_size(roomList);
+	
+	for(var i = 0; i < roomCount; i++)
+	{
+		var testRoom = ds_list_find_value(roomList,i);
+		show_debug_message(string(testRoom.x1) + ", " + string(testRoom.y1) + " to " + string(testRoom.x2) + ", " + string(testRoom.y2));
+		var hallwayCount = ds_list_size(testRoom.hallways);
+		show_debug_message(string(hallwayCount));
+	}*/
+	
+	
+	var firstRoom = ds_list_find_value(roomList, 0);
+
+	var centerX = (firstRoom.x1 + firstRoom.x2) / 2;
+	var centerY = (firstRoom.y1 + firstRoom.y2) / 2;
+
+	var playerInstance = instance_create_layer(centerX * CELL_SIZE + (CELL_SIZE / 2), centerY * CELL_SIZE + (CELL_SIZE / 2), "Dungeon", obj_player);
+	
+	var deadEnd = ds_list_create();
+	
+	for(var i = 0; i < ds_list_size(roomList);i++){
+		var rm = ds_list_find_value(roomList,i);
+		var enemy = [];
+		if(i!=0){
+			enemy = CreateEnemies(rm.x1,rm.y1,rm.x2,rm.y2);
+		}
+		CreateHazards(rm);
+		if(ds_list_size(rm.hallways)<=1){
+			ds_list_add(deadEnd, rm);
+		}
+	}
+	
+	var reloadRand = irandom(ds_list_size(deadEnd) - 1);
+	var reloadRoom = ds_list_find_value(deadEnd, reloadRand);
+	//Generate dungeon reload instance in this room;
 
 
 	
@@ -303,7 +355,7 @@ CreateRoom = function(_x1, _y1, _x2, _y2) {
         tilemap_set(layer_tilemap_get_id(layer_get_id("WallTile")), wallTileIndex, _x1 - 1, yy);
         tilemap_set(layer_tilemap_get_id(layer_get_id("WallTile")), wallTileIndex, _x2 + 1, yy);
     }*/
-	var cellSize = 16; // 假设每个tile的大小为32x32像素
+	var cellSize = 16;
     for (var xx = _x1 - 1; xx <= _x2 + 1; xx++) {
         instance_create_layer(xx * cellSize, (_y1 - 1) * cellSize, "WallTile", obj_wall);
         instance_create_layer(xx * cellSize, (_y2 + 1) * cellSize, "WallTile", obj_wall);
@@ -312,6 +364,9 @@ CreateRoom = function(_x1, _y1, _x2, _y2) {
         instance_create_layer((_x1 - 1) * cellSize, yy * cellSize, "WallTile", obj_wall);
         instance_create_layer((_x2 + 1) * cellSize, yy * cellSize, "WallTile", obj_wall);
     }
+	
+	return currentRoom;
+	//CreateHazards(_x1,_y1,_x2,_y2);
 }
 
 CreateHallway = function(_x1, _y1, _x2, _y2, isNorthSouth) {
@@ -340,7 +395,7 @@ CreateHallway = function(_x1, _y1, _x2, _y2, isNorthSouth) {
         }
     }*/
 	
-	var cellSize = 16; // 假设每个tile的大小为32x32像素
+	var cellSize = 16;
     
     if (isNorthSouth) {
         for (var temp_y = _y1; temp_y <= _y2; temp_y++) {
@@ -371,11 +426,118 @@ CreateHallway = function(_x1, _y1, _x2, _y2, isNorthSouth) {
 
 }
 
+CreateHazards = function(rm) {
+	var _x1 = rm.x1;
+	var _y1 = rm.y1;
+	var _x2 = rm.x2;
+	var _y2 = rm.y2;
+	var hazardCount = irandom_range(1,3);
+	show_debug_message("CreatingHazards" + string(hazardCount));
+	var placedHazards = [];
+	var hazardDistance = 128;
+	var hallwayDistance = 128;
+	for(var j = 0; j<hazardCount;j++){
+		var hazard;
+		var posX, posY;
+		var validPosition = false;
+		var size = random_range(0.5,1.5);
+		hazard = instance_create_layer(0,0,"Dungeon", obj_hazard);
+		while(!validPosition){
+			var hazard_width = sprite_get_width(hazard.sprite_index) * size;
+			var hazard_height = sprite_get_height(hazard.sprite_index) * size;
+			
+			var adjusted_x1 = _x1 * CELL_SIZE;
+	        var adjusted_y1 = _y1 * CELL_SIZE;
+	        var adjusted_x2 = _x2 * CELL_SIZE - hazard_width;
+	        var adjusted_y2 = _y2 * CELL_SIZE - hazard_height;
+		
+			var posX = irandom_range(adjusted_x1, adjusted_x2);
+			var posY = irandom_range(adjusted_y1, adjusted_y2);
+			
+			validPosition = true;
+			for (var i = 0; i < array_length(placedHazards); i++) {
+				var placedHazard = placedHazards[i];
+				if (point_distance(posX, posY, placedHazard.x, placedHazard.y) < hazardDistance) {
+					validPosition = false;
+					break;
+				}
+			}
+			for (var i = 0;i < ds_list_size(rm.hallways);i++){
+				var hallway = ds_list_find_value(rm.hallways, i);
+				if(hallway.NorthSouth){
+					if(posX >= hallway.x1 * CELL_SIZE - hazard_width && posX<= hallway.x2 * CELL_SIZE){
+						if(rm.y2 == hallway.y2){
+							if(hallway.y2 * CELL_SIZE - posY < hallwayDistance){
+								validPosition = false;
+							}
+						}
+						else{
+							if(posY - hallway.y1 * CELL_SIZE < hallwayDistance){
+								validPosition = false;
+							}
+						}
+					}
+				}
+				else{
+					if(posY >= hallway.y1 * CELL_SIZE - hazard_height && posY<= hallway.y2 * CELL_SIZE){
+						if(rm.x2 == hallway.x2){
+							if(hallway.x2 * CELL_SIZE - posX < hallwayDistance){
+								validPosition = false;
+							}
+						}
+						else{
+							if(posX - hallway.x1 * CELL_SIZE < hallwayDistance){
+								validPosition = false;
+							}
+						}
+					}
+				}
+			}
+		}
+		hazard.x = posX;
+		hazard.y = posY;
+		hazard.image_xscale = size;
+        hazard.image_yscale = size;
+		placedHazards[array_length(placedHazards)] = {x: posX, y: posY};
+	}
+	return placedHazards;
+}
+
+CreateEnemies = function(_x1,_y1,_x2,_y2){
+	var enemyCount = irandom_range(2,4);
+	var placedEnemies = [];
+	var enemyDistance = 128;
+	for(var j = 0; j<enemyCount;j++){
+		var enemyType = choose(oTracker, oTurret);
+		
+		var enemy;
+		var posX, posY;
+		var validPosition = false;
+		enemy = instance_create_layer(0,0,"Dungeon", enemyType);
+		while(!validPosition){
+			var adjusted_x1 = _x1 * CELL_SIZE;
+	        var adjusted_y1 = _y1 * CELL_SIZE;
+	        var adjusted_x2 = _x2 * CELL_SIZE - sprite_get_width(enemy.sprite_index);
+	        var adjusted_y2 = _y2 * CELL_SIZE - sprite_get_height(enemy.sprite_index);
+		
+			var posX = irandom_range(adjusted_x1, adjusted_x2);
+			var posY = irandom_range(adjusted_y1, adjusted_y2);
+			
+			validPosition = true;
+			for (var i = 0; i < array_length(placedEnemies); i++) {
+				var placedEnemy = placedEnemies[i];
+				if (point_distance(posX, posY, placedEnemy.x, placedEnemy.y) < enemyDistance) {
+					validPosition = false;
+					break;
+				}
+			}
+		}
+		enemy.x = posX;
+		enemy.y = posY;
+		placedEnemies[array_length(placedEnemies)] = {x: posX, y: posY};
+	}
+	return placedEnemies;
+}
+
 GenerateNewDungeon();
 
-var firstRoom = ds_list_find_value(roomList, 0);
-
-var centerX = (firstRoom.x1 + firstRoom.x2) / 2;
-var centerY = (firstRoom.y1 + firstRoom.y2) / 2;
-
-var playerInstance = instance_create_layer(centerX * CELL_SIZE + (CELL_SIZE / 2), centerY * CELL_SIZE + (CELL_SIZE / 2), "Dungeon", obj_player);
