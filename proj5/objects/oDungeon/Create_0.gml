@@ -6,10 +6,10 @@ dungeon = ds_grid_create(_dungeonWidth, _dungeonHeight);
 roomList = ds_list_create();
 
 // Room size ranges
-roomWidthMin = 20;
-roomWidthMax = 24;
-roomHeightMin = 20;
-roomHeightMax = 24;
+roomWidthMin = 22;
+roomWidthMax = 26;
+roomHeightMin = 22;
+roomHeightMax = 26;
 
 // Hallway size ranges
 hallwayLengthMin = 6;
@@ -299,7 +299,7 @@ GenerateNewDungeon = function() {
 	}
 	
 	//test for new dungeonRoom structure
-	var roomCount = ds_list_size(roomList);
+	/*var roomCount = ds_list_size(roomList);
 	
 	for(var i = 0; i < roomCount; i++)
 	{
@@ -307,7 +307,7 @@ GenerateNewDungeon = function() {
 		show_debug_message(string(testRoom.x1) + ", " + string(testRoom.y1) + " to " + string(testRoom.x2) + ", " + string(testRoom.y2));
 		var hallwayCount = ds_list_size(testRoom.hallways);
 		show_debug_message(string(hallwayCount));
-	}
+	}*/
 	
 	
 	var firstRoom = ds_list_find_value(roomList, 0);
@@ -325,7 +325,7 @@ GenerateNewDungeon = function() {
 		if(i!=0){
 			enemy = CreateEnemies(rm.x1,rm.y1,rm.x2,rm.y2);
 		}
-		//createHazards(rm.x1,rm.y1,rm.x2,rm.y2);
+		CreateHazards(rm);
 		if(ds_list_size(rm.hallways)<=1){
 			ds_list_add(deadEnd, rm);
 		}
@@ -426,30 +426,81 @@ CreateHallway = function(_x1, _y1, _x2, _y2, isNorthSouth) {
 
 }
 
-CreateHazards = function(_x1, _y1, _x2, _y2) {
-	var num_hazard = irandom_range(1,3);
-	var cellSize = 16;
-	for(var i = 0; i < num_hazard; i++)
-	{
-		var size = random_range(0.5,2);
+CreateHazards = function(rm) {
+	var _x1 = rm.x1;
+	var _y1 = rm.y1;
+	var _x2 = rm.x2;
+	var _y2 = rm.y2;
+	var hazardCount = irandom_range(1,3);
+	show_debug_message("CreatingHazards" + string(hazardCount));
+	var placedHazards = [];
+	var hazardDistance = 128;
+	var hallwayDistance = 128;
+	for(var j = 0; j<hazardCount;j++){
+		var hazard;
+		var posX, posY;
+		var validPosition = false;
+		var size = random_range(0.5,1.5);
+		hazard = instance_create_layer(0,0,"Dungeon", obj_hazard);
+		while(!validPosition){
+			var hazard_width = sprite_get_width(hazard.sprite_index) * size;
+			var hazard_height = sprite_get_height(hazard.sprite_index) * size;
+			
+			var adjusted_x1 = _x1 * CELL_SIZE;
+	        var adjusted_y1 = _y1 * CELL_SIZE;
+	        var adjusted_x2 = _x2 * CELL_SIZE - hazard_width;
+	        var adjusted_y2 = _y2 * CELL_SIZE - hazard_height;
 		
-		var maxSizeWidth = sprite_get_width(spr_hazard) * size;
-        var maxSizeHeight = sprite_get_height(spr_hazard) * size;
-		
-		var adjusted_x1 = _x1 * cellSize;
-        var adjusted_y1 = _y1 * cellSize;
-        var adjusted_x2 = _x2 * cellSize - ceil(maxSizeWidth);
-        var adjusted_y2 = _y2 * cellSize - ceil(maxSizeHeight);
-		
-		if (adjusted_x1 < adjusted_x2 && adjusted_y1 < adjusted_y2) {
-            var center_x = irandom_range(adjusted_x1, adjusted_x2);
-            var center_y = irandom_range(adjusted_y1, adjusted_y2);
-            var hazard = instance_create_layer(center_x, center_y, "Dungeon", obj_hazard);
-
-            hazard.image_xscale = size;
-            hazard.image_yscale = size;
-        }
+			var posX = irandom_range(adjusted_x1, adjusted_x2);
+			var posY = irandom_range(adjusted_y1, adjusted_y2);
+			
+			validPosition = true;
+			for (var i = 0; i < array_length(placedHazards); i++) {
+				var placedHazard = placedHazards[i];
+				if (point_distance(posX, posY, placedHazard.x, placedHazard.y) < hazardDistance) {
+					validPosition = false;
+					break;
+				}
+			}
+			for (var i = 0;i < ds_list_size(rm.hallways);i++){
+				var hallway = ds_list_find_value(rm.hallways, i);
+				if(hallway.NorthSouth){
+					if(posX >= hallway.x1 * CELL_SIZE - hazard_width && posX<= hallway.x2 * CELL_SIZE){
+						if(rm.y2 == hallway.y2){
+							if(hallway.y2 * CELL_SIZE - posY < hallwayDistance){
+								validPosition = false;
+							}
+						}
+						else{
+							if(posY - hallway.y1 * CELL_SIZE < hallwayDistance){
+								validPosition = false;
+							}
+						}
+					}
+				}
+				else{
+					if(posY >= hallway.y1 * CELL_SIZE - hazard_height && posY<= hallway.y2 * CELL_SIZE){
+						if(rm.x2 == hallway.x2){
+							if(hallway.x2 * CELL_SIZE - posX < hallwayDistance){
+								validPosition = false;
+							}
+						}
+						else{
+							if(posX - hallway.x1 * CELL_SIZE < hallwayDistance){
+								validPosition = false;
+							}
+						}
+					}
+				}
+			}
+		}
+		hazard.x = posX;
+		hazard.y = posY;
+		hazard.image_xscale = size;
+        hazard.image_yscale = size;
+		placedHazards[array_length(placedHazards)] = {x: posX, y: posY};
 	}
+	return placedHazards;
 }
 
 CreateEnemies = function(_x1,_y1,_x2,_y2){
