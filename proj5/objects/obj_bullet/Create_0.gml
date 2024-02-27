@@ -1,6 +1,4 @@
-/// @description Insert description here
-// You can write your code in this editor
 direction = 0;
-hspeed = 10;
-
+//hspeed = 10;
+bouncesLeft = 100;
 

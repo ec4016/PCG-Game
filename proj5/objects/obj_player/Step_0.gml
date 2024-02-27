@@ -39,7 +39,7 @@ self.image_angle = point_direction(x, y, mouse_x, mouse_y);
 
 if shoot {
 	attack_cooldown +=1;
-	if(attack_cooldown >=10){
+	if(attack_cooldown >= 15) {
 	    bullet = instance_create_layer(x, y, "Instances", obj_bullet);
 	    bullet.speed = 13;
 	    bullet.direction= point_direction(x, y, mouse_x, mouse_y);
@@ -47,8 +47,7 @@ if shoot {
 	    attack_cooldown = 0;
 	}
 }
-//shootTimer += 1;
-//if (shootTimer >= shootInterval) {
-//    shootTimer = 0;
-//    instance_create_layer(x, y, "Instances", obj_bullet);
-//}
+
+if (!place_meeting(x+4, y, [oEnemBullet, oTracker])) {
+	health -= 1;
+}
