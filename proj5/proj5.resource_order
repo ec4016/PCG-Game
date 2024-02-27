@@ -24,6 +24,7 @@
     {"name":"TileSet2","order":1,"path":"tilesets/TileSet2/TileSet2.yy",},
     {"name":"sTile","order":4,"path":"sprites/sTile/sTile.yy",},
     {"name":"heart","order":7,"path":"sprites/heart/heart.yy",},
+    {"name":"oTrackShooter","order":10,"path":"objects/oTrackShooter/oTrackShooter.yy",},
     {"name":"spr_rock_small","order":3,"path":"sprites/spr_rock_small/spr_rock_small.yy",},
     {"name":"obj_bullet","order":1,"path":"objects/obj_bullet/obj_bullet.yy",},
     {"name":"rmDungeon","order":1,"path":"rooms/rmDungeon/rmDungeon.yy",},
@@ -33,5 +34,6 @@
     {"name":"obj_camera","order":3,"path":"objects/obj_camera/obj_camera.yy",},
     {"name":"wallTile","order":6,"path":"sprites/wallTile/wallTile.yy",},
     {"name":"oDunReload","order":9,"path":"objects/oDunReload/oDunReload.yy",},
+    {"name":"Sprite9","order":14,"path":"sprites/Sprite9/Sprite9.yy",},
   ],
 }

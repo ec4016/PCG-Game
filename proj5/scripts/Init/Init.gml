@@ -3,10 +3,12 @@
 #macro ENEM_HEALTH 2
 
 #region powerups
-
-#macro RICHOCHET false
-#macro HEALTH_BOOST false
+//permanent
 #macro GRAZE false
+
+//generated powerup
+#macro RICHOCHET true
+#macro HEALTH_BOOST false
 
 #endregion
 
