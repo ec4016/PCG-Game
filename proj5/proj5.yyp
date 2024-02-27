@@ -56,7 +56,7 @@
     {"id":{"name":"obj_camera","path":"objects/obj_camera/obj_camera.yy",},},
     {"id":{"name":"wallTile","path":"sprites/wallTile/wallTile.yy",},},
     {"id":{"name":"oDunReload","path":"objects/oDunReload/oDunReload.yy",},},
-    {"id":{"name":"Sprite9","path":"sprites/Sprite9/Sprite9.yy",},},
+    {"id":{"name":"exit_stairs","path":"sprites/exit_stairs/exit_stairs.yy",},},
     {"id":{"name":"tTile","path":"tilesets/tTile/tTile.yy",},},
     {"id":{"name":"oDungeon","path":"objects/oDungeon/oDungeon.yy",},},
   ],

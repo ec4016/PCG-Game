@@ -34,6 +34,6 @@
     {"name":"obj_camera","order":3,"path":"objects/obj_camera/obj_camera.yy",},
     {"name":"wallTile","order":6,"path":"sprites/wallTile/wallTile.yy",},
     {"name":"oDunReload","order":9,"path":"objects/oDunReload/oDunReload.yy",},
-    {"name":"Sprite9","order":14,"path":"sprites/Sprite9/Sprite9.yy",},
+    {"name":"exit_stairs","order":8,"path":"sprites/exit_stairs/exit_stairs.yy",},
   ],
 }

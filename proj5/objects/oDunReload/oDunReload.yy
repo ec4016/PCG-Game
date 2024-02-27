@@ -28,8 +28,8 @@
   "properties": [],
   "solid": false,
   "spriteId": {
-    "name": "Sprite9",
-    "path": "sprites/Sprite9/Sprite9.yy",
+    "name": "Dungeon_Tile_Set",
+    "path": "sprites/Dungeon_Tile_Set/Dungeon_Tile_Set.yy",
   },
   "spriteMaskId": null,
   "visible": true,
