@@ -237,7 +237,9 @@ GenerateNewDungeon = function() {
 					if (!_isTouching) {
 						CreateRoom(_roomX1, _roomY1, _roomX2, _roomY2);
 						CreateHallway(_hallwayX1, _hallwayY1, _hallwayX2, _hallwayY2, isNorthSouth);
-						
+						var hallway = new DungeonHallway(_hallwayX1, _hallwayY1, _hallwayX2, _hallwayY2, isNorthSouth);
+						ds_list_add(currentRoom.hallways, hallway);
+						ds_list_add(ds_list_find_value(roomList,ds_list_size(roomList)-1).hallways, hallway);
 						_createdHallway = true;
 						iterations = -1;
 						break;
@@ -282,6 +284,18 @@ GenerateNewDungeon = function() {
 			tilemap_set(layer_tilemap_get_id(layer_get_id("Tiles")), _tileInd, xx, yy);
 		}
 	}
+	
+	//test for new dungeonRoom structure
+	var roomCount = ds_list_size(roomList);
+	
+	for(var i = 0; i < roomCount; i++)
+	{
+		var testRoom = ds_list_find_value(roomList,i);
+		show_debug_message(string(testRoom.x1) + ", " + string(testRoom.y1) + " to " + string(testRoom.x2) + ", " + string(testRoom.y2));
+		var hallwayCount = ds_list_size(testRoom.hallways);
+		show_debug_message(string(hallwayCount));
+	}	
+
 
 
 	
@@ -303,7 +317,7 @@ CreateRoom = function(_x1, _y1, _x2, _y2) {
         tilemap_set(layer_tilemap_get_id(layer_get_id("WallTile")), wallTileIndex, _x1 - 1, yy);
         tilemap_set(layer_tilemap_get_id(layer_get_id("WallTile")), wallTileIndex, _x2 + 1, yy);
     }*/
-	var cellSize = 16; // 假设每个tile的大小为32x32像素
+	var cellSize = 16;
     for (var xx = _x1 - 1; xx <= _x2 + 1; xx++) {
         instance_create_layer(xx * cellSize, (_y1 - 1) * cellSize, "WallTile", obj_wall);
         instance_create_layer(xx * cellSize, (_y2 + 1) * cellSize, "WallTile", obj_wall);
@@ -312,6 +326,8 @@ CreateRoom = function(_x1, _y1, _x2, _y2) {
         instance_create_layer((_x1 - 1) * cellSize, yy * cellSize, "WallTile", obj_wall);
         instance_create_layer((_x2 + 1) * cellSize, yy * cellSize, "WallTile", obj_wall);
     }
+	
+	//CreateHazards(_x1,_y1,_x2,_y2);
 }
 
 CreateHallway = function(_x1, _y1, _x2, _y2, isNorthSouth) {
@@ -340,7 +356,7 @@ CreateHallway = function(_x1, _y1, _x2, _y2, isNorthSouth) {
         }
     }*/
 	
-	var cellSize = 16; // 假设每个tile的大小为32x32像素
+	var cellSize = 16;
     
     if (isNorthSouth) {
         for (var temp_y = _y1; temp_y <= _y2; temp_y++) {
@@ -369,6 +385,32 @@ CreateHallway = function(_x1, _y1, _x2, _y2, isNorthSouth) {
     }
 	
 
+}
+
+CreateHazards = function(_x1, _y1, _x2, _y2) {
+	var num_hazard = irandom_range(1,3);
+	var cellSize = 16;
+	for(var i = 0; i < num_hazard; i++)
+	{
+		var size = random_range(0.5,2);
+		
+		var maxSizeWidth = sprite_get_width(spr_hazard) * size;
+        var maxSizeHeight = sprite_get_height(spr_hazard) * size;
+		
+		var adjusted_x1 = _x1 * cellSize;
+        var adjusted_y1 = _y1 * cellSize;
+        var adjusted_x2 = _x2 * cellSize - ceil(maxSizeWidth);
+        var adjusted_y2 = _y2 * cellSize - ceil(maxSizeHeight);
+		
+		if (adjusted_x1 < adjusted_x2 && adjusted_y1 < adjusted_y2) {
+            var center_x = irandom_range(adjusted_x1, adjusted_x2);
+            var center_y = irandom_range(adjusted_y1, adjusted_y2);
+            var hazard = instance_create_layer(center_x, center_y, "Dungeon", obj_hazard);
+
+            hazard.image_xscale = size;
+            hazard.image_yscale = size;
+        }
+	}
 }
 
 GenerateNewDungeon();
