@@ -27,7 +27,10 @@
   "physicsStartAwake": true,
   "properties": [],
   "solid": false,
-  "spriteId": null,
+  "spriteId": {
+    "name": "spr_richochet",
+    "path": "sprites/spr_richochet/spr_richochet.yy",
+  },
   "spriteMaskId": null,
   "visible": true,
 }
