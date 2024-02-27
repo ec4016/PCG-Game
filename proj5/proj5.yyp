@@ -54,6 +54,7 @@
     {"id":{"name":"Dungeon_Tile_Set","path":"sprites/Dungeon_Tile_Set/Dungeon_Tile_Set.yy",},},
     {"id":{"name":"obj_camera","path":"objects/obj_camera/obj_camera.yy",},},
     {"id":{"name":"wallTile","path":"sprites/wallTile/wallTile.yy",},},
+    {"id":{"name":"oDunReload","path":"objects/oDunReload/oDunReload.yy",},},
     {"id":{"name":"tTile","path":"tilesets/tTile/tTile.yy",},},
     {"id":{"name":"oDungeon","path":"objects/oDungeon/oDungeon.yy",},},
   ],

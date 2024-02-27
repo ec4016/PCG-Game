@@ -51,3 +51,8 @@ if shoot {
 if (!place_meeting(x+4, y, [oEnemBullet, oTracker])) {
 	health -= 1;
 }
+
+if (health <= 0) {
+	//teleport to main hub
+	health = 3;
+}

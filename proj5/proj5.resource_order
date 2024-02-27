@@ -32,5 +32,6 @@
     {"name":"Dungeon_Tile_Set","order":5,"path":"sprites/Dungeon_Tile_Set/Dungeon_Tile_Set.yy",},
     {"name":"obj_camera","order":3,"path":"objects/obj_camera/obj_camera.yy",},
     {"name":"wallTile","order":6,"path":"sprites/wallTile/wallTile.yy",},
+    {"name":"oDunReload","order":9,"path":"objects/oDunReload/oDunReload.yy",},
   ],
 }

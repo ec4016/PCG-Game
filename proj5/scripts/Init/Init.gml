@@ -2,6 +2,14 @@
 #macro ENEM_DISTANCE 10
 #macro ENEM_HEALTH 2
 
+#region powerups
+
+#macro RICHOCHET false
+#macro HEALTH_BOOST false
+#macro GRAZE false
+
+#endregion
+
 enum CELL_TYPES {
 	WALL,
 	ROOM,
