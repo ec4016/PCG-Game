@@ -1,10 +1,9 @@
 {
   "resourceType": "GMObject",
   "resourceVersion": "1.0",
-  "name": "oTracker",
+  "name": "oDunReload",
   "eventList": [
     {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,},
-    {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,},
   ],
   "managed": true,
   "overriddenProperties": [],
@@ -29,8 +28,8 @@
   "properties": [],
   "solid": false,
   "spriteId": {
-    "name": "spr_rock_big",
-    "path": "sprites/spr_rock_big/spr_rock_big.yy",
+    "name": "Dungeon_Tile_Set",
+    "path": "sprites/Dungeon_Tile_Set/Dungeon_Tile_Set.yy",
   },
   "spriteMaskId": null,
   "visible": true,
