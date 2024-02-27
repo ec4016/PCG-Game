@@ -12,6 +12,8 @@
 
 #endregion
 
+global.richochet = false;
+
 enum CELL_TYPES {
 	WALL,
 	ROOM,
