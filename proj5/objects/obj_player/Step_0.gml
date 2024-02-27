@@ -10,6 +10,16 @@ if (keyboard_check(ord("S"))) vy += moveSpeed;
 if (keyboard_check(ord("A"))) vx -= moveSpeed;
 if (keyboard_check(ord("D"))) vx += moveSpeed;
 
+collisionTileIndex = 16;
+
+var nextX = x + vx;
+var nextY = y + vy;
+
+if (place_meeting(nextX, nextY, obj_wall)) {
+    vx = 0;
+    vy = 0;
+}
+
 x += vx;
 y += vy;
 
@@ -24,5 +34,5 @@ y = clamp(y, halfHeight, room_height - halfHeight);
 shootTimer += 1;
 if (shootTimer >= shootInterval) {
     shootTimer = 0;
-    instance_create_layer(x, y, "Instances", obj_bullet);
+    //instance_create_layer(x, y, "Instances", obj_bullet);
 }
