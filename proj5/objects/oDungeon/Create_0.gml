@@ -327,6 +327,8 @@ CreateRoom = function(_x1, _y1, _x2, _y2) {
         instance_create_layer((_x2 + 1) * cellSize, yy * cellSize, "WallTile", obj_wall);
     }
 	
+	CreateEnemies(_x1,_y1,_x2,_y2);
+	
 	//CreateHazards(_x1,_y1,_x2,_y2);
 }
 
@@ -410,6 +412,41 @@ CreateHazards = function(_x1, _y1, _x2, _y2) {
             hazard.image_xscale = size;
             hazard.image_yscale = size;
         }
+	}
+}
+
+CreateEnemies = function(_x1,_y1,_x2,_y2){
+	var enemyCount = irandom_range(2,4);
+	var placedEnemies = [];
+	var enemyDistance = 128;
+	for(var j = 0; j<enemyCount;j++){
+		var enemyType = choose(oTracker, oTurret);
+		
+		var enemy;
+		var posX, posY;
+		var validPosition = false;
+		enemy = instance_create_layer(0,0,"Dungeon", enemyType);
+		while(!validPosition){
+			var adjusted_x1 = _x1 * CELL_SIZE;
+	        var adjusted_y1 = _y1 * CELL_SIZE;
+	        var adjusted_x2 = _x2 * CELL_SIZE - sprite_get_width(enemy.sprite_index);
+	        var adjusted_y2 = _y2 * CELL_SIZE - sprite_get_height(enemy.sprite_index);
+		
+			var posX = irandom_range(adjusted_x1, adjusted_x2);
+			var posY = irandom_range(adjusted_y1, adjusted_y2);
+			
+			validPosition = true;
+			for (var i = 0; i < array_length(placedEnemies); i++) {
+				var placedEnemy = placedEnemies[i];
+				if (point_distance(posX, posY, placedEnemy.x, placedEnemy.y) < enemyDistance) {
+					validPosition = false;
+					break;
+				}
+			}
+		}
+		enemy.x = posX;
+		enemy.y = posY;
+		placedEnemies[array_length(placedEnemies)] = {x: posX, y: posY};
 	}
 }
 

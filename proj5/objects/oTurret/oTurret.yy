@@ -27,7 +27,10 @@
   "physicsStartAwake": true,
   "properties": [],
   "solid": false,
-  "spriteId": null,
+  "spriteId": {
+    "name": "spr_rock_small",
+    "path": "sprites/spr_rock_small/spr_rock_small.yy",
+  },
   "spriteMaskId": null,
   "visible": true,
 }
