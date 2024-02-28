@@ -44,6 +44,7 @@
     {"name":"spr_track_shooter","order":15,"path":"sprites/spr_track_shooter/spr_track_shooter.yy",},
     {"name":"wallTile","order":6,"path":"sprites/wallTile/wallTile.yy",},
     {"name":"oDunReload","order":9,"path":"objects/oDunReload/oDunReload.yy",},
+    {"name":"laserShoot","order":1,"path":"sounds/laserShoot/laserShoot.yy",},
     {"name":"exit_stairs","order":8,"path":"sprites/exit_stairs/exit_stairs.yy",},
   ],
 }
