@@ -60,6 +60,9 @@ GenerateNewDungeon = function() {
 	with(oHeartBooster){
 		instance_destroy();
 	}
+	with(oRichochet){
+		instance_destroy();
+	}
 	var _dungeonWidth = ds_grid_width(dungeon);
 	var _dungeonHeight = ds_grid_height(dungeon);
 	
@@ -344,9 +347,15 @@ GenerateNewDungeon = function() {
 		playerLives = playerInstance.playerLives;
 	}
 	var healthBoostProb;
-	if(playerLives <1) healthBoostProb = 0.3;
-	else if(playerLives > 3) healthBoostProb = 0.1;
-	else healthBoostProb = 0.2;
+	if(playerLives <=1){
+		healthBoostProb = 0.3;
+	}
+	else if(playerLives >= 3){
+		healthBoostProb = 0.1;
+	}
+	else{
+		healthBoostProb = 0.15;
+	}
 	show_debug_message(string(playerLives));
 	
 	//Select exit room
