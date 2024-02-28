@@ -66,6 +66,9 @@ GenerateNewDungeon = function() {
 	with(oRichochet){
 		instance_destroy();
 	}
+	with(oBomb){
+		instance_destroy();
+	}
 	var _dungeonWidth = ds_grid_width(dungeon);
 	var _dungeonHeight = ds_grid_height(dungeon);
 	
@@ -394,10 +397,10 @@ GenerateNewDungeon = function() {
 			hazards = CreateHazards(rm);
 			enemy = CreateEnemies(rm.x1,rm.y1,rm.x2,rm.y2, hazards);
 			if(richochetRoom==i){
-				//CreateRichochet(rm, hazards);
+				CreateRichochet(rm, hazards);
 			}
 			else if(random_range(0,1) < healthBoostProb && !isBoostGenerated){
-				//CreateHealthBooster(rm, hazards);
+				CreateHealthBooster(rm, hazards);
 			}
 		}
 	}
@@ -648,13 +651,18 @@ CreateEnemies = function(_x1,_y1,_x2,_y2, hazards){
 	var enemyDistance = 64;
 	var wallDistance = 64;
 	for(var j = 0; j<enemyCount;j++){
-		var enemyType = choose(oTracker, oTurret, oTrackShooter);
+		var enemyType = choose(oTracker, oTurret);
+		
+		if (currLevel > 30) {
+			enemyType = choose(oTracker, oTurret, oTrackShooter);
+		}
 		
 		var enemy;
 		var posX, posY;
 		var validPosition = false;
 		enemy = instance_create_layer(0,0,"Dungeon", enemyType);
 		var iter = 0;
+		
 		while(!validPosition && iter < 50){
 			iter++;
 			var adjusted_x1 = _x1 * CELL_SIZE + wallDistance;

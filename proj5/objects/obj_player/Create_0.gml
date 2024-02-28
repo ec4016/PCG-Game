@@ -7,3 +7,5 @@ canBomb = false;
 
 grazeDistance = 15;
 bombDistance = 500;
+
+bulletLimit = 3;

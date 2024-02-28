@@ -11,7 +11,7 @@
 //#macro HEALTH_BOOST false
 
 
-global.graze = false;
+global.graze = true;
 global.richochet = false;
 global.healthBoost = 0;
 

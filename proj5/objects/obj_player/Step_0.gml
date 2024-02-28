@@ -49,10 +49,14 @@ self.image_xscale = 0.5;
 self.image_yscale = 0.5;
 self.image_angle = point_direction(x, y, mouse_x, mouse_y);
 
+if (global.richochet) {
+	bulletLimit = 10;
+}
+
 if shoot {
 	audio_play_sound(laserShoot, 0, false);
 	attack_cooldown +=1;
-	if(attack_cooldown >= 8 && instance_number(obj_bullet) < 3) {
+	if(attack_cooldown >= 8 && instance_number(obj_bullet) < bulletLimit) {
 	    bullet = instance_create_layer(x, y, "Instances", obj_bullet);
 	    bullet.speed = 13;
 	    bullet.direction= point_direction(x, y, mouse_x, mouse_y);

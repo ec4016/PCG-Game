@@ -14,8 +14,8 @@ function shoot() {
 
 if (turretLives <= 0) {
 	chance = random(100);
-	if (chance <= global.dropRate) {
-		powerup = instance_create_layer(x, y, "Instances", oHeartBooster);
+	if (chance <= global.dropRate && dm.currLevel > 10) {
+		powerup = instance_create_layer(x, y, "Instances", choose(oRichochet, oBomb));
 	}
 	instance_destroy();
 }
