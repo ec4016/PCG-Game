@@ -33,6 +33,8 @@ wallTileIndex = 16;
 
 richochetProb = 0.2;
 
+highestLevel = 0;
+
 GenerateNewDungeon = function() {
 	
 	// Reset dungeon data
@@ -58,6 +60,9 @@ GenerateNewDungeon = function() {
 		instance_destroy();
 	}
 	with(oHeartBooster){
+		instance_destroy();
+	}
+	with(oRichochet){
 		instance_destroy();
 	}
 	var _dungeonWidth = ds_grid_width(dungeon);
@@ -323,23 +328,58 @@ GenerateNewDungeon = function() {
 		show_debug_message(string(hallwayCount));
 	}*/
 	
-	
+	//Init player
 	var firstRoom = ds_list_find_value(roomList, 0);
 
 	var centerX = (firstRoom.x1 + firstRoom.x2) / 2;
 	var centerY = (firstRoom.y1 + firstRoom.y2) / 2;
-
+	var playerInstance;
+	var playerLives;
 	if(instance_exists(obj_player)){
-		var playerInstance = instance_find(obj_player, 0);
+		playerInstance = instance_find(obj_player, 0);
 		playerInstance.x = centerX * CELL_SIZE;
 		playerInstance.y = centerY * CELL_SIZE;
 	}
 	else{
-		var playerInstance = instance_create_layer(centerX * CELL_SIZE + (CELL_SIZE / 2), centerY * CELL_SIZE + (CELL_SIZE / 2), "Dungeon", obj_player);
+		playerInstance = instance_create_layer(centerX * CELL_SIZE + (CELL_SIZE / 2), centerY * CELL_SIZE + (CELL_SIZE / 2), "Dungeon", obj_player);
 	}
 	
+	//set healthBoost prob
+	if(playerInstance){
+		playerLives = playerInstance.playerLives;
+	}
+	var healthBoostProb;
+	if(highestLevel>=10){
+		healthBoostProb = 0.1;
+	}
+	else if(playerLives <=1){
+		healthBoostProb = 0.2;
+	}
+	else if(playerLives >= 3){
+		healthBoostProb = 0.1;
+	}
+	else if(playerLives >=5){
+		healthBoostProb = 0.01;
+	}
+	else{
+		healthBoostProb = 0.15;
+	}
+	var isBoostGenerated = false;
+	show_debug_message(string(playerLives));
 	
+	//Select exit room
 	var deadEnd = ds_list_create();
+	for(var i = 1;i < ds_list_size(roomList);i++){
+		var rm = ds_list_find_value(roomList,i);
+		if(ds_list_size(rm.hallways)<=1){
+			ds_list_add(deadEnd,{roomId: rm, roomInd: i});
+		}
+	}
+	var reloadRand = irandom(ds_list_size(deadEnd) - 1);
+	var reloadRoom = ds_list_find_value(deadEnd, reloadRand);
+	var reloadRoomInd = reloadRoom.roomInd;
+	
+	//Generating rooms
 	var richochetRoom = noone;
 	show_debug_message(string(global.richochet));
 	if(!global.richochet && random_range(0,1)<richochetProb){
@@ -349,26 +389,22 @@ GenerateNewDungeon = function() {
 		var rm = ds_list_find_value(roomList,i);
 		var enemy = [];
 		var hazards = [];
-		if(i!=0){
-			enemy = CreateEnemies(rm.x1,rm.y1,rm.x2,rm.y2);
+		if(i!=0 && i!=reloadRoomInd){
 			hazards = CreateHazards(rm);
-		}
-		if(richochetRoom==i){
-			CreateRichochet(rm, hazards);
-		}
-		else if(random_range(0,1) < 0.1){
-			CreateHealthBooster(rm, hazards);
-		}
-		if(ds_list_size(rm.hallways)<=1){
-			ds_list_add(deadEnd, rm);
+			enemy = CreateEnemies(rm.x1,rm.y1,rm.x2,rm.y2, hazards);
+			if(richochetRoom==i){
+				CreateRichochet(rm, hazards);
+			}
+			else if(random_range(0,1) < healthBoostProb && !isBoostGenerated){
+				CreateHealthBooster(rm, hazards);
+			}
 		}
 	}
 	
-	var reloadRand = irandom(ds_list_size(deadEnd) - 1);
-	var reloadRoom = ds_list_find_value(deadEnd, reloadRand);
+	
 	//Generate dungeon reload instance in this room;
-	centerX = (reloadRoom.x1 + reloadRoom.x2) / 2;
-	centerY = (reloadRoom.y1 + reloadRoom.y2) / 2;
+	centerX = (reloadRoom.roomId.x1 + reloadRoom.roomId.x2) / 2;
+	centerY = (reloadRoom.roomId.y1 + reloadRoom.roomId.y2) / 2;
 	
 	var exitInstance = instance_create_layer(centerX * CELL_SIZE, centerY * CELL_SIZE, "Dungeon", oDunReload);
 
@@ -529,23 +565,23 @@ CreateHazards = function(rm) {
 	var hazardCount = irandom_range(1,3);
 	var placedHazards = [];
 	var hazardDistance = 128;
-	var hallwayDistance = 128;
+	var hallwayDistance = 64;
 	for(var j = 0; j<hazardCount;j++){
 		var hazard;
 		var posX, posY;
 		var validPosition = false;
-		var size = random_range(0.5,1.5);
-		hazard = instance_create_layer(0,0,"Dungeon", obj_hazard);
+		var size = random_range(2,3);
+		hazard = instance_create_layer(0,0,"WallTile", obj_wall);
 		var iter = 0;
 		while(!validPosition && iter < 50){
 			iter++;
 			var hazard_width = sprite_get_width(hazard.sprite_index) * size;
 			var hazard_height = sprite_get_height(hazard.sprite_index) * size;
 			
-			var adjusted_x1 = _x1 * CELL_SIZE;
-	        var adjusted_y1 = _y1 * CELL_SIZE;
-	        var adjusted_x2 = _x2 * CELL_SIZE - hazard_width;
-	        var adjusted_y2 = _y2 * CELL_SIZE - hazard_height;
+			var adjusted_x1 = _x1 * CELL_SIZE + hallwayDistance;
+	        var adjusted_y1 = _y1 * CELL_SIZE + hallwayDistance;
+	        var adjusted_x2 = _x2 * CELL_SIZE - hazard_width - hallwayDistance;
+	        var adjusted_y2 = _y2 * CELL_SIZE - hazard_height - hallwayDistance;
 		
 			var posX = irandom_range(adjusted_x1, adjusted_x2);
 			var posY = irandom_range(adjusted_y1, adjusted_y2);
@@ -590,19 +626,26 @@ CreateHazards = function(rm) {
 				}
 			}
 		}
-		hazard.x = posX;
-		hazard.y = posY;
-		hazard.image_xscale = size;
-        hazard.image_yscale = size;
-		placedHazards[array_length(placedHazards)] = {x: posX, y: posY};
+		if(validPosition)
+		{
+			hazard.x = posX;
+			hazard.y = posY;
+			hazard.image_xscale = size;
+	        hazard.image_yscale = size;
+			placedHazards[array_length(placedHazards)] = {x: posX, y: posY};
+		}
+		else{
+			instance_destroy(hazard);
+		}
 	}
 	return placedHazards;
 }
 
-CreateEnemies = function(_x1,_y1,_x2,_y2){
-	var enemyCount = irandom_range(1,3);
+CreateEnemies = function(_x1,_y1,_x2,_y2, hazards){
+	var enemyCount = irandom_range(1 + highestLevel div 3,2 + highestLevel div 3);
 	var placedEnemies = [];
-	var enemyDistance = 128;
+	var enemyDistance = 64;
+	var wallDistance = 64;
 	for(var j = 0; j<enemyCount;j++){
 		var enemyType = choose(oTracker, oTurret);
 		
@@ -613,13 +656,13 @@ CreateEnemies = function(_x1,_y1,_x2,_y2){
 		var iter = 0;
 		while(!validPosition && iter < 50){
 			iter++;
-			var adjusted_x1 = _x1 * CELL_SIZE;
-	        var adjusted_y1 = _y1 * CELL_SIZE;
-	        var adjusted_x2 = _x2 * CELL_SIZE - sprite_get_width(enemy.sprite_index);
-	        var adjusted_y2 = _y2 * CELL_SIZE - sprite_get_height(enemy.sprite_index);
+			var adjusted_x1 = _x1 * CELL_SIZE + wallDistance;
+	        var adjusted_y1 = _y1 * CELL_SIZE + wallDistance;
+	        var adjusted_x2 = _x2 * CELL_SIZE - sprite_get_width(enemy.sprite_index) - wallDistance;
+	        var adjusted_y2 = _y2 * CELL_SIZE - sprite_get_height(enemy.sprite_index) - wallDistance;
 		
-			var posX = irandom_range(adjusted_x1, adjusted_x2);
-			var posY = irandom_range(adjusted_y1, adjusted_y2);
+			var posX = random_range(adjusted_x1, adjusted_x2);
+			var posY = random_range(adjusted_y1, adjusted_y2);
 			
 			validPosition = true;
 			for (var i = 0; i < array_length(placedEnemies); i++) {
@@ -629,10 +672,23 @@ CreateEnemies = function(_x1,_y1,_x2,_y2){
 					break;
 				}
 			}
+			for (var i = 0; i < array_length(hazards); i++) {
+				if (point_distance(posX, posY, hazards[i].x, hazards[i].y) < wallDistance) {
+					validPosition = false;
+					break;
+				}
+			}
+			
 		}
-		enemy.x = posX;
-		enemy.y = posY;
-		placedEnemies[array_length(placedEnemies)] = {x: posX, y: posY};
+		if(validPosition)
+		{
+			enemy.x = posX;
+			enemy.y = posY;
+			placedEnemies[array_length(placedEnemies)] = {x: posX, y: posY};
+		}
+		else{
+			instance_destroy(enemy);
+		}
 	}
 	return placedEnemies;
 }

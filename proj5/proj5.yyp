@@ -65,6 +65,7 @@
     {"id":{"name":"obj_music","path":"objects/obj_music/obj_music.yy",},},
     {"id":{"name":"rmDungeon","path":"rooms/rmDungeon/rmDungeon.yy",},},
     {"id":{"name":"DungeonRoom","path":"scripts/DungeonRoom/DungeonRoom.yy",},},
+    {"id":{"name":"HighScore","path":"fonts/HighScore/HighScore.yy",},},
     {"id":{"name":"spr_enem_bullet","path":"sprites/spr_enem_bullet/spr_enem_bullet.yy",},},
     {"id":{"name":"oEnemBullet","path":"objects/oEnemBullet/oEnemBullet.yy",},},
     {"id":{"name":"spr_hazard","path":"sprites/spr_hazard/spr_hazard.yy",},},
