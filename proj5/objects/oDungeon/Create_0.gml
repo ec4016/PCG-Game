@@ -648,7 +648,7 @@ CreateEnemies = function(_x1,_y1,_x2,_y2, hazards){
 	var enemyDistance = 64;
 	var wallDistance = 64;
 	for(var j = 0; j<enemyCount;j++){
-		var enemyType = choose(oTracker, oTurret);
+		var enemyType = choose(oTracker, oTurret, oTrackShooter);
 		
 		var enemy;
 		var posX, posY;
