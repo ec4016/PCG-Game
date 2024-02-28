@@ -1,5 +1,5 @@
 #macro CELL_SIZE 16
-#macro ENEM_DISTANCE 200
+#macro ENEM_DISTANCE 250
 #macro ENEM_HEALTH 2
 
 #region powerups
@@ -12,7 +12,9 @@
 
 #endregion
 
+global.graze = false;
 global.richochet = false;
+global.healthBoost = false;
 
 enum CELL_TYPES {
 	WALL,

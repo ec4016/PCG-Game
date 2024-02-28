@@ -1,4 +1,4 @@
 direction = 0;
-//hspeed = 10;
+canBomb = true;
 bouncesLeft = 3;
 
