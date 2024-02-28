@@ -104,6 +104,9 @@ if (playerLives <= 0) {
 	//teleport to death limbo room
 	room_goto(rmGameOver);
 	playerLives = 3;
+	global.richochet = false;
+	global.graze = false;
+	global.healthBoost = 0;
 }
 
 if (bombInput && canBomb) {
