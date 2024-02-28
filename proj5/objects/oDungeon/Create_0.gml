@@ -348,11 +348,11 @@ GenerateNewDungeon = function() {
 	for(var i = 0; i < ds_list_size(roomList);i++){
 		var rm = ds_list_find_value(roomList,i);
 		var enemy = [];
+		var hazards = [];
 		if(i!=0){
 			enemy = CreateEnemies(rm.x1,rm.y1,rm.x2,rm.y2);
+			hazards = CreateHazards(rm);
 		}
-		var hazards = CreateHazards(rm);
-
 		if(richochetRoom==i){
 			CreateRichochet(rm, hazards);
 		}
@@ -600,7 +600,7 @@ CreateHazards = function(rm) {
 }
 
 CreateEnemies = function(_x1,_y1,_x2,_y2){
-	var enemyCount = irandom_range(2,4);
+	var enemyCount = irandom_range(1,3);
 	var placedEnemies = [];
 	var enemyDistance = 128;
 	for(var j = 0; j<enemyCount;j++){
