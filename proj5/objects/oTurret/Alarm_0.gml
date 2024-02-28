@@ -1,5 +1,5 @@
 if (bulletSpiralIterator < bulletSpiralCount) {
-    var _inst = instance_create_layer(x,y,"Instances",obj_bullet);
+    var _inst = instance_create_layer(x,y,"Instances", oEnemBullet);
     _inst.direction = (360/bulletSpiralCount)*bulletSpiralIterator;
     _inst.speed = bulletSpiralSpeed;
 
