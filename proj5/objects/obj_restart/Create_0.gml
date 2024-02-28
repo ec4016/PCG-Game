@@ -1,0 +1,1 @@
+dm = instance_find(oDungeon, 0);

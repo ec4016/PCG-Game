@@ -34,6 +34,7 @@ wallTileIndex = 16;
 richochetProb = 0.2;
 
 highestLevel = 0;
+currLevel = 0;
 
 GenerateNewDungeon = function() {
 	
@@ -63,6 +64,9 @@ GenerateNewDungeon = function() {
 		instance_destroy();
 	}
 	with(oRichochet){
+		instance_destroy();
+	}
+	with(oBomb){
 		instance_destroy();
 	}
 	var _dungeonWidth = ds_grid_width(dungeon);
@@ -349,7 +353,7 @@ GenerateNewDungeon = function() {
 		playerLives = playerInstance.playerLives;
 	}
 	var healthBoostProb;
-	if(highestLevel>=10){
+	if(currLevel>=10){
 		healthBoostProb = 0.1;
 	}
 	else if(playerLives <=1){
@@ -642,18 +646,23 @@ CreateHazards = function(rm) {
 }
 
 CreateEnemies = function(_x1,_y1,_x2,_y2, hazards){
-	var enemyCount = irandom_range(1 + highestLevel div 3,2 + highestLevel div 3);
+	var enemyCount = irandom_range(1 + currLevel div 3,2 + currLevel div 3);
 	var placedEnemies = [];
 	var enemyDistance = 64;
 	var wallDistance = 64;
 	for(var j = 0; j<enemyCount;j++){
 		var enemyType = choose(oTracker, oTurret);
 		
+		if (currLevel > 30 || global.richochet) {
+			enemyType = choose(oTracker, oTurret, oTrackShooter);
+		}
+		
 		var enemy;
 		var posX, posY;
 		var validPosition = false;
 		enemy = instance_create_layer(0,0,"Dungeon", enemyType);
 		var iter = 0;
+		
 		while(!validPosition && iter < 50){
 			iter++;
 			var adjusted_x1 = _x1 * CELL_SIZE + wallDistance;

@@ -3,15 +3,16 @@ if (place_meeting(x, y, [oTracker, oTurret])) {
 }
 
 
-if (RICHOCHET) {
-	if (place_meeting(xprevious, y, [obj_wall])) {
-		bouncesLeft -= 1;
-	}
+if (global.richochet) {
+	show_debug_message(string(timer));
+	if (timer > 0) {timer--;}
 
-
-	if (bouncesLeft <= 0) {
-	    instance_destroy();
+	if (timer == 0)
+	{
+	 instance_destroy();
+	 timer = -1; // This is important, or the timer will trigger every step once it runs out
 	}
+	
 	else {
 			move_bounce_solid(true);
 	}

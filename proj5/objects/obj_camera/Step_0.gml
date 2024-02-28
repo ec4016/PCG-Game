@@ -5,12 +5,13 @@ var cam, playerX, playerY, viewW, viewH;
 
 
 
-player_viewW = 16*70;
-player_viewH = 9*70;
+player_viewW = 16*60;
+player_viewH = 9*60;
 
 global_viewW = 2048;
 global_viewH = 2048/16*9;
 
+window_set_size(player_viewW, player_viewH);
 
 
 cam = view_camera[0];

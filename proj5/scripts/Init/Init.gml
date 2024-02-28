@@ -4,17 +4,21 @@
 
 #region powerups
 //permanent
-#macro GRAZE false
+//#macro GRAZE true
 
-//generated powerup
-#macro RICHOCHET false
-#macro HEALTH_BOOST false
+////generated powerup
+//#macro RICHOCHET false
+//#macro HEALTH_BOOST false
 
-#endregion
 
 global.graze = false;
 global.richochet = false;
-global.healthBoost = false;
+global.healthBoost = 0;
+
+global.spawns = [oHeartBooster, oRichochet, oBomb];
+global.dropRate = 20;
+
+#endregion
 
 enum CELL_TYPES {
 	WALL,
