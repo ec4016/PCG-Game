@@ -1,1 +1,2 @@
-speed = 1;
+trackShooterSpeed = 1;
+attack_cooldown = 0;
