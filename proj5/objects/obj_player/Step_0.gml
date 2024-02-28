@@ -95,6 +95,7 @@ function bomb() {
 
 if (playerLives <= 0) {
 	//teleport to death limbo room
+	room_goto(rmGameOver);
 	playerLives = 3;
 }
 
