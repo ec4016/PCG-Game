@@ -65,10 +65,6 @@ if shoot {
 	}
 }
 
-if (bombInput && canBomb) {
-	bomb();
-}
-
 
 function doGraze() {
 	for (var i = 0; i < instance_number(oEnemBullet); ++i;) {
@@ -85,15 +81,22 @@ function doGraze() {
 }
 
 function bomb() {
-	for (var i = 0; i < instance_number(oEnemBullet); ++i;) {
-		currEnem = instance_find(oEnemBullet, i);
-		if (point_distance(x, y, currEnem.x, currEnem.y) <= bombDistance) {
-			instance_destroy(currEnem.id);
+	if (playerTimer > 0) {
+
+		for (var i = 0; i < instance_number(oEnemBullet); ++i;) {
+			currEnem = instance_find(oEnemBullet, i);
+			if (point_distance(x, y, currEnem.x, currEnem.y) <= bombDistance) {
+				instance_destroy(currEnem.id);
+			}
 		}
+		grazeMeter = 0;
+		playerTimer--;
 	}
 		
-	canBomb = false;
-	grazeMeter = 0;
+	if (playerTimer == 0) {
+		canBomb = false;
+		playerTimer = -1;
+	}
 }
 
 
@@ -101,6 +104,11 @@ if (playerLives <= 0) {
 	//teleport to death limbo room
 	room_goto(rmGameOver);
 	playerLives = 3;
+}
+
+if (bombInput && canBomb) {
+	playerTimer = room_speed * 0.5;
+	bomb();
 }
 
 if (global.graze) {

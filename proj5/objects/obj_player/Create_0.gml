@@ -6,6 +6,8 @@ grazeMeter = 0;
 canBomb = false;
 
 grazeDistance = 15;
-bombDistance = 500;
+bombDistance = 400;
 
 bulletLimit = 3;
+
+playerTimer = room_speed * 0.5
