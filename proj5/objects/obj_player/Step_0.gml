@@ -47,6 +47,7 @@ self.image_yscale = 0.5;
 self.image_angle = point_direction(x, y, mouse_x, mouse_y);
 
 if shoot {
+	audio_play_sound(laserShoot, 0, false);
 	attack_cooldown +=1;
 	if(attack_cooldown >= 8 && instance_number(obj_bullet) < 3) {
 	    bullet = instance_create_layer(x, y, "Instances", obj_bullet);
