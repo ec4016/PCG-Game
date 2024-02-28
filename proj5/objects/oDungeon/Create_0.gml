@@ -33,6 +33,8 @@ wallTileIndex = 16;
 
 richochetProb = 0.2;
 
+highestLevel = 0;
+
 GenerateNewDungeon = function() {
 	
 	// Reset dungeon data
@@ -347,20 +349,27 @@ GenerateNewDungeon = function() {
 		playerLives = playerInstance.playerLives;
 	}
 	var healthBoostProb;
-	if(playerLives <=1){
-		healthBoostProb = 0.3;
+	if(highestLevel>=10){
+		healthBoostProb = 0.1;
+	}
+	else if(playerLives <=1){
+		healthBoostProb = 0.2;
 	}
 	else if(playerLives >= 3){
 		healthBoostProb = 0.1;
 	}
+	else if(playerLives >=5){
+		healthBoostProb = 0.01;
+	}
 	else{
 		healthBoostProb = 0.15;
 	}
+	var isBoostGenerated = false;
 	show_debug_message(string(playerLives));
 	
 	//Select exit room
 	var deadEnd = ds_list_create();
-	for(var i = 0;i < ds_list_size(roomList);i++){
+	for(var i = 1;i < ds_list_size(roomList);i++){
 		var rm = ds_list_find_value(roomList,i);
 		if(ds_list_size(rm.hallways)<=1){
 			ds_list_add(deadEnd,{roomId: rm, roomInd: i});
@@ -386,7 +395,7 @@ GenerateNewDungeon = function() {
 			if(richochetRoom==i){
 				CreateRichochet(rm, hazards);
 			}
-			else if(random_range(0,1) < healthBoostProb){
+			else if(random_range(0,1) < healthBoostProb && !isBoostGenerated){
 				CreateHealthBooster(rm, hazards);
 			}
 		}
@@ -617,11 +626,17 @@ CreateHazards = function(rm) {
 				}
 			}
 		}
-		hazard.x = posX;
-		hazard.y = posY;
-		hazard.image_xscale = size;
-        hazard.image_yscale = size;
-		placedHazards[array_length(placedHazards)] = {x: posX, y: posY};
+		if(validPosition)
+		{
+			hazard.x = posX;
+			hazard.y = posY;
+			hazard.image_xscale = size;
+	        hazard.image_yscale = size;
+			placedHazards[array_length(placedHazards)] = {x: posX, y: posY};
+		}
+		else{
+			instance_destroy(hazard);
+		}
 	}
 	return placedHazards;
 }
