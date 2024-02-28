@@ -4,7 +4,7 @@
 
 #region powerups
 //permanent
-#macro GRAZE false
+#macro GRAZE true
 
 //generated powerup
 #macro RICHOCHET false

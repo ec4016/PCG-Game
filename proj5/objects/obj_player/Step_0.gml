@@ -9,7 +9,10 @@ if (keyboard_check(ord("W"))) vy -= moveSpeed;
 if (keyboard_check(ord("S"))) vy += moveSpeed;
 if (keyboard_check(ord("A"))) vx -= moveSpeed;
 if (keyboard_check(ord("D"))) vx += moveSpeed;
+
 shoot = mouse_check_button(mb_left);
+bombInput = mouse_check_button(mb_right);
+
 
 collisionTileIndex = 16;
 
@@ -57,30 +60,43 @@ if shoot {
 	}
 }
 
+if (bombInput && canBomb) {
+	bomb();
+}
+
+
 function graze() {
 	for (var i = 0; i < instance_number(oEnemBullet); ++i;) {
 		currEnem = instance_find(oEnemBullet, i);
-		if (point_distance(x, y, currEnem.x, currEnem.y) < grazeDistance) {
+		if (point_distance(x, y, currEnem.x, currEnem.y) <= grazeDistance) {
 			grazeMeter++;
 		}
 	}
 	
-	if (grazeMeter == 100) {
+	if (grazeMeter >= 100) {
 		canBomb = true;
-		grazeMeter = 0;
+		grazeMeter = 100;
 	}
 }
 
 function bomb() {
-	inst = instance_nearest(x, y, oEnemBullet);
-	if (point_distance(x, y, inst.x, inst.y) < 10) {
-		instance_destroy(obj_bullet.id);
+	for (var i = 0; i < instance_number(oEnemBullet); ++i;) {
+		currEnem = instance_find(oEnemBullet, i);
+		if (point_distance(x, y, currEnem.x, currEnem.y) <= bombDistance) {
+			instance_destroy(currEnem.id);
+		}
 	}
+		
 	canBomb = false;
+	grazeMeter = 0;
 }
 
 
-if (lives <= 0) {
+if (playerLives <= 0) {
 	//teleport to death limbo room
-	lives = 3;
+	playerLives = 3;
+}
+
+if (GRAZE) {
+	graze();
 }

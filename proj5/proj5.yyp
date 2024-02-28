@@ -49,6 +49,7 @@
     {"id":{"name":"spr_turret","path":"sprites/spr_turret/spr_turret.yy",},},
     {"id":{"name":"sTile","path":"sprites/sTile/sTile.yy",},},
     {"id":{"name":"obj_hazard","path":"objects/obj_hazard/obj_hazard.yy",},},
+    {"id":{"name":"spr_grazeIndicator","path":"sprites/spr_grazeIndicator/spr_grazeIndicator.yy",},},
     {"id":{"name":"Init","path":"scripts/Init/Init.yy",},},
     {"id":{"name":"spr_tracker","path":"sprites/spr_tracker/spr_tracker.yy",},},
     {"id":{"name":"heart","path":"sprites/heart/heart.yy",},},

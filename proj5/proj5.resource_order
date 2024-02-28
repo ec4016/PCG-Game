@@ -28,6 +28,7 @@
     {"name":"spr_turret","order":12,"path":"sprites/spr_turret/spr_turret.yy",},
     {"name":"sTile","order":4,"path":"sprites/sTile/sTile.yy",},
     {"name":"obj_hazard","order":9,"path":"objects/obj_hazard/obj_hazard.yy",},
+    {"name":"spr_grazeIndicator","order":16,"path":"sprites/spr_grazeIndicator/spr_grazeIndicator.yy",},
     {"name":"spr_tracker","order":13,"path":"sprites/spr_tracker/spr_tracker.yy",},
     {"name":"heart","order":7,"path":"sprites/heart/heart.yy",},
     {"name":"oTrackShooter","order":10,"path":"objects/oTrackShooter/oTrackShooter.yy",},
