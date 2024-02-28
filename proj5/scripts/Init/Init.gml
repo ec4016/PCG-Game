@@ -1,5 +1,5 @@
 #macro CELL_SIZE 16
-#macro ENEM_DISTANCE 10
+#macro ENEM_DISTANCE 200
 #macro ENEM_HEALTH 2
 
 #region powerups
@@ -7,7 +7,7 @@
 #macro GRAZE false
 
 //generated powerup
-#macro RICHOCHET true
+#macro RICHOCHET false
 #macro HEALTH_BOOST false
 
 #endregion

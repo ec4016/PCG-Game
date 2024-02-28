@@ -1,1 +1,2 @@
-speed = 1;
+trackerSpeed = 1;
+trackerLives = 2;

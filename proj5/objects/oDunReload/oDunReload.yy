@@ -28,8 +28,8 @@
   "properties": [],
   "solid": false,
   "spriteId": {
-    "name": "Dungeon_Tile_Set",
-    "path": "sprites/Dungeon_Tile_Set/Dungeon_Tile_Set.yy",
+    "name": "exit_stairs",
+    "path": "sprites/exit_stairs/exit_stairs.yy",
   },
   "spriteMaskId": null,
   "visible": true,

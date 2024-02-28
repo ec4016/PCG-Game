@@ -5,8 +5,8 @@ var cam, playerX, playerY, viewW, viewH;
 
 
 
-player_viewW = 480;
-player_viewH = 270;
+player_viewW = 16*40;
+player_viewH = 9*40;
 
 global_viewW = 2048;
 global_viewH = 2048/16*9;

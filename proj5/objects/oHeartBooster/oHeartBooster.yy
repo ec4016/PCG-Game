@@ -27,7 +27,10 @@
   "physicsStartAwake": true,
   "properties": [],
   "solid": false,
-  "spriteId": null,
+  "spriteId": {
+    "name": "spr_heartboost",
+    "path": "sprites/spr_heartboost/spr_heartboost.yy",
+  },
   "spriteMaskId": null,
   "visible": true,
 }
