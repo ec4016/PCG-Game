@@ -3,7 +3,7 @@ if (place_meeting(x, y, [oTracker, oTurret])) {
 }
 
 
-if (RICHOCHET) {
+if (global.richochet) {
 	if (place_meeting(xprevious, y, [obj_wall])) {
 		bouncesLeft -= 1;
 	}

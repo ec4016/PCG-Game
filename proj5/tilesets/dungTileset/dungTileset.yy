@@ -1,7 +1,7 @@
 {
   "resourceType": "GMTileSet",
   "resourceVersion": "1.0",
-  "name": "TileSet2",
+  "name": "dungTileset",
   "autoTileSets": [],
   "macroPageTiles": {
     "SerialiseHeight": 0,

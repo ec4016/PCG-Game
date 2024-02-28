@@ -11,5 +11,9 @@ else {
 }
 
 if (trackerLives <= 0) {
+	chance = random(100);
+	if (chance <= global.dropRate) {
+		powerup = instance_create_layer(x, y, "Instances", oHeartBooster);
+	}
 	instance_destroy();
 }

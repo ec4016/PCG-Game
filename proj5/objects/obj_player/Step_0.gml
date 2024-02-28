@@ -66,7 +66,7 @@ if (bombInput && canBomb) {
 }
 
 
-function graze() {
+function doGraze() {
 	for (var i = 0; i < instance_number(oEnemBullet); ++i;) {
 		currEnem = instance_find(oEnemBullet, i);
 		if (point_distance(x, y, currEnem.x, currEnem.y) <= grazeDistance) {
@@ -99,6 +99,6 @@ if (playerLives <= 0) {
 	playerLives = 3;
 }
 
-if (GRAZE) {
-	graze();
+if (global.graze) {
+	doGraze();
 }

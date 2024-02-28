@@ -6,7 +6,7 @@
     "name": "audiogroup_default",
     "path": "audiogroups/audiogroup_default",
   },
-  "bitDepth": 1,
+  "bitDepth": 0,
   "bitRate": 128,
   "compression": 0,
   "conversionMode": 0,

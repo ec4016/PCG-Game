@@ -34,6 +34,7 @@ wallTileIndex = 16;
 richochetProb = 0.2;
 
 highestLevel = 0;
+currLevel = 0;
 
 GenerateNewDungeon = function() {
 	
@@ -349,7 +350,7 @@ GenerateNewDungeon = function() {
 		playerLives = playerInstance.playerLives;
 	}
 	var healthBoostProb;
-	if(highestLevel>=10){
+	if(currLevel>=10){
 		healthBoostProb = 0.1;
 	}
 	else if(playerLives <=1){
@@ -393,10 +394,10 @@ GenerateNewDungeon = function() {
 			hazards = CreateHazards(rm);
 			enemy = CreateEnemies(rm.x1,rm.y1,rm.x2,rm.y2, hazards);
 			if(richochetRoom==i){
-				CreateRichochet(rm, hazards);
+				//CreateRichochet(rm, hazards);
 			}
 			else if(random_range(0,1) < healthBoostProb && !isBoostGenerated){
-				CreateHealthBooster(rm, hazards);
+				//CreateHealthBooster(rm, hazards);
 			}
 		}
 	}
@@ -642,7 +643,7 @@ CreateHazards = function(rm) {
 }
 
 CreateEnemies = function(_x1,_y1,_x2,_y2, hazards){
-	var enemyCount = irandom_range(1 + highestLevel div 3,2 + highestLevel div 3);
+	var enemyCount = irandom_range(1 + currLevel div 3,2 + currLevel div 3);
 	var placedEnemies = [];
 	var enemyDistance = 64;
 	var wallDistance = 64;
