@@ -1,1 +1,1 @@
-lives -= 1;
+playerLives -= 1;

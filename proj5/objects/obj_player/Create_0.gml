@@ -4,4 +4,4 @@ grazeMeter = 0;
 canBomb = false;
 grazeDistance = 10;
 
-lives = 3;
+playerLives = 3;

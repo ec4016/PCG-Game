@@ -323,20 +323,33 @@ GenerateNewDungeon = function() {
 		show_debug_message(string(hallwayCount));
 	}*/
 	
-	
+	//Init player
 	var firstRoom = ds_list_find_value(roomList, 0);
 
 	var centerX = (firstRoom.x1 + firstRoom.x2) / 2;
 	var centerY = (firstRoom.y1 + firstRoom.y2) / 2;
-
+	var playerInstance;
+	var playerLives;
 	if(instance_exists(obj_player)){
-		var playerInstance = instance_find(obj_player, 0);
+		playerInstance = instance_find(obj_player, 0);
 		playerInstance.x = centerX * CELL_SIZE;
 		playerInstance.y = centerY * CELL_SIZE;
 	}
 	else{
-		var playerInstance = instance_create_layer(centerX * CELL_SIZE + (CELL_SIZE / 2), centerY * CELL_SIZE + (CELL_SIZE / 2), "Dungeon", obj_player);
+		playerInstance = instance_create_layer(centerX * CELL_SIZE + (CELL_SIZE / 2), centerY * CELL_SIZE + (CELL_SIZE / 2), "Dungeon", obj_player);
 	}
+	
+	//set healthBoost prob
+	if(playerInstance){
+		playerLives = playerInstance.playerLives;
+	}
+	var healthBoostProb;
+	if(playerLives <1) healthBoostProb = 0.3;
+	else if(playerLives > 3) healthBoostProb = 0.1;
+	else healthBoostProb = 0.2;
+	show_debug_message(string(playerLives));
+	
+	//Select exit room
 	var deadEnd = ds_list_create();
 	for(var i = 0;i < ds_list_size(roomList);i++){
 		var rm = ds_list_find_value(roomList,i);
@@ -348,7 +361,7 @@ GenerateNewDungeon = function() {
 	var reloadRoom = ds_list_find_value(deadEnd, reloadRand);
 	var reloadRoomInd = reloadRoom.roomInd;
 	
-
+	//Generating rooms
 	var richochetRoom = noone;
 	show_debug_message(string(global.richochet));
 	if(!global.richochet && random_range(0,1)<richochetProb){
@@ -364,12 +377,10 @@ GenerateNewDungeon = function() {
 			if(richochetRoom==i){
 				CreateRichochet(rm, hazards);
 			}
-			else if(random_range(0,1) < 0.1){
+			else if(random_range(0,1) < healthBoostProb){
 				CreateHealthBooster(rm, hazards);
 			}
 		}
-
-
 	}
 	
 	
@@ -536,7 +547,7 @@ CreateHazards = function(rm) {
 	var hazardCount = irandom_range(1,3);
 	var placedHazards = [];
 	var hazardDistance = 128;
-	var hallwayDistance = 128;
+	var hallwayDistance = 64;
 	for(var j = 0; j<hazardCount;j++){
 		var hazard;
 		var posX, posY;
@@ -549,10 +560,10 @@ CreateHazards = function(rm) {
 			var hazard_width = sprite_get_width(hazard.sprite_index) * size;
 			var hazard_height = sprite_get_height(hazard.sprite_index) * size;
 			
-			var adjusted_x1 = _x1 * CELL_SIZE;
-	        var adjusted_y1 = _y1 * CELL_SIZE;
-	        var adjusted_x2 = _x2 * CELL_SIZE - hazard_width;
-	        var adjusted_y2 = _y2 * CELL_SIZE - hazard_height;
+			var adjusted_x1 = _x1 * CELL_SIZE + hallwayDistance;
+	        var adjusted_y1 = _y1 * CELL_SIZE + hallwayDistance;
+	        var adjusted_x2 = _x2 * CELL_SIZE - hazard_width - hallwayDistance;
+	        var adjusted_y2 = _y2 * CELL_SIZE - hazard_height - hallwayDistance;
 		
 			var posX = irandom_range(adjusted_x1, adjusted_x2);
 			var posY = irandom_range(adjusted_y1, adjusted_y2);
