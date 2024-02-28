@@ -642,7 +642,7 @@ CreateHazards = function(rm) {
 }
 
 CreateEnemies = function(_x1,_y1,_x2,_y2, hazards){
-	var enemyCount = irandom_range(1,3);
+	var enemyCount = irandom_range(1 + highestLevel div 3,2 + highestLevel div 3);
 	var placedEnemies = [];
 	var enemyDistance = 64;
 	var wallDistance = 64;
