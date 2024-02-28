@@ -31,7 +31,7 @@ iterationMax = 50;
 
 wallTileIndex = 16;
 
-richochetProb = 0.05;
+richochetProb = 0.2;
 
 GenerateNewDungeon = function() {
 	
@@ -341,6 +341,10 @@ GenerateNewDungeon = function() {
 	
 	var deadEnd = ds_list_create();
 	var richochetRoom = noone;
+	show_debug_message(string(global.richochet));
+	if(!global.richochet && random_range(0,1)<richochetProb){
+		richochetRoom = irandom_range(1, ds_list_size(roomList)-1);
+	}
 	for(var i = 0; i < ds_list_size(roomList);i++){
 		var rm = ds_list_find_value(roomList,i);
 		var enemy = [];
@@ -348,7 +352,11 @@ GenerateNewDungeon = function() {
 			enemy = CreateEnemies(rm.x1,rm.y1,rm.x2,rm.y2);
 		}
 		var hazards = CreateHazards(rm);
-		if(random_range(0,1) < 0.1){
+
+		if(richochetRoom==i){
+			CreateRichochet(rm, hazards);
+		}
+		else if(random_range(0,1) < 0.1){
 			CreateHealthBooster(rm, hazards);
 		}
 		if(ds_list_size(rm.hallways)<=1){
@@ -482,6 +490,35 @@ CreateHealthBooster = function(rm, hazards){
 	
 	healthBooster.x = posX;
 	healthBooster.y = posY;
+}
+
+CreateRichochet = function(rm, hazards){
+	var richochet = instance_create_layer((rm.x1 + rm.x2)/2 * CELL_SIZE, (rm.y1+rm.y2)/2 * CELL_SIZE, "Dungeon", oRichochet);
+	var iter = 0;
+	var dist = 64;
+	var validPosition = false;
+	var richochetWidth = sprite_get_width(richochet.sprite_index);
+	var richochetHeight = sprite_get_height(richochet.sprite_index);
+	var posX, posY;
+	var adjusted_x1 = rm.x1 * CELL_SIZE;
+	var adjusted_y1 = rm.y1 * CELL_SIZE;
+	var adjusted_x2 = rm.x2 * CELL_SIZE - richochetWidth;
+	var adjusted_y2 = rm.y2 * CELL_SIZE - richochetHeight;
+	
+	while(!validPosition && iter<50){
+		validPosition = true;
+		posX = irandom_range(adjusted_x1, adjusted_x2);
+		posY = irandom_range(adjusted_y1, adjusted_y2);
+		for (var i = 0; i < array_length(hazards); i++) {
+			if (point_distance(posX, posY, hazards[i].x, hazards[i].y) < dist) {
+					validPosition = false;
+					break;
+			}
+		}
+	}
+	
+	richochet.x = posX;
+	richochet.y = posY;
 }
 
 CreateHazards = function(rm) {
