@@ -9,3 +9,7 @@ if (point_distance(obj_player.x, obj_player.y, x, y) < ENEM_DISTANCE) {
 else {
 	speed = 0;
 }
+
+if (trackerLives <= 0) {
+	instance_destroy();
+}

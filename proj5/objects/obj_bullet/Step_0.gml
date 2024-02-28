@@ -1,10 +1,10 @@
-if (place_meeting(x+4, y, [oTracker, oTurret])) {
+if (place_meeting(x, y, [oTracker, oTurret])) {
 	instance_destroy();
 }
 
 
 if (RICHOCHET) {
-	if (place_meeting(x+4, y, [obj_wall])) {
+	if (place_meeting(xprevious, y, [obj_wall])) {
 		bouncesLeft -= 1;
 	}
 
@@ -18,7 +18,7 @@ if (RICHOCHET) {
 }
 
 else {
-	if (place_meeting(x+4, y, [obj_wall])) {
+	if (place_meeting(x, y, [obj_wall])) {
 		instance_destroy();
 	}
 }

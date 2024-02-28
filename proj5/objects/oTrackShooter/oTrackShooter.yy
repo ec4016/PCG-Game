@@ -28,7 +28,10 @@
   "physicsStartAwake": true,
   "properties": [],
   "solid": false,
-  "spriteId": null,
+  "spriteId": {
+    "name": "spr_track_shooter",
+    "path": "sprites/spr_track_shooter/spr_track_shooter.yy",
+  },
   "spriteMaskId": null,
   "visible": true,
 }

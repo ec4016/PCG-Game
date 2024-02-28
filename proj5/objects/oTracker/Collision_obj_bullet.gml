@@ -1,0 +1,1 @@
+trackerLives -= 1;

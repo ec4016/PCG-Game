@@ -1,4 +1,4 @@
-if (!place_meeting(x+4, y, [obj_player, obj_bullet, obj_wall])) {
+if (place_meeting(x, y, [obj_player, obj_bullet, obj_wall])) {
 	instance_destroy();
 }
 

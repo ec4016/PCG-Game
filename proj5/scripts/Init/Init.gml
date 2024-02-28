@@ -7,7 +7,7 @@
 #macro GRAZE false
 
 //generated powerup
-#macro RICHOCHET true
+#macro RICHOCHET false
 #macro HEALTH_BOOST false
 
 #endregion
